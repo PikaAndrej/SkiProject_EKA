@@ -1,0 +1,28 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerControl : MonoBehaviour
+{
+    private InputAction move;
+    [SerializeField] private float rotSpeed, speed;
+    private Rigidbody rb;
+    
+
+    void Awake()
+    {
+        move = InputSystem.actions.FindAction("Player/Move");
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void FixedUpdate()
+    {
+        
+        Vector2 moveInput = move.ReadValue<Vector2>();
+        Debug.Log("x: "+ moveInput.x + " y: " + moveInput.y);
+        transform.Rotate(0, moveInput.x * rotSpeed * Time.fixedDeltaTime, 0);
+        float turnAngle = Mathf.Abs(180 - transform.localEulerAngles.y);
+        float speedMult = Mathf.Cos(turnAngle * Mathf.Deg2Rad); 
+        rb.AddForce(transform.forward * speed * speedMult * Time.fixedDeltaTime);
+        Debug.Log("Turn angle: " + turnAngle);
+    }
+}
